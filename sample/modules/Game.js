@@ -1,18 +1,30 @@
 import { Node } from "../lib/Node.js";
 import { Sprite } from "../lib/Sprite.js";
+import { Label } from "../lib/Label.js";
 import { Card } from "../modules/Card.js";
 export class Game extends Node {
 
     init() {
-        this._initSize();
-        this._initCards();
-        this._initBackground();
         this.countClick = 0;
         this.firstCard = null;
         this.secondCard = null;
+        this.score = 10000;
+        this._initSize();
+        this._initCards();
+        this._initBackground();
+        this._initScore();
     }
 
     
+    _initScore() {
+        let score = new Label(this.score,{
+            color: "#fff",
+            fontSize: "25px",
+            top: "10px",
+            left: "20px"
+        },true,false);
+        this.addChild(score);
+    }
 
     _initSize(){
         this.width = 800;
@@ -31,7 +43,6 @@ export class Game extends Node {
         for (let i = 1; i <= 20; i++) {           
             myArray.push(i);
         }
-
 
         for (let i = myArray.length-1; i >0  ; i--)
         {
@@ -64,37 +75,71 @@ export class Game extends Node {
     }
 
     onClickCard(evt) {
+        let timeline = gsap.timeline();
         let card = evt.target.node;
-        this.countClick++;
-        if(this.countClick === 1){
+        if(this.countClick === 0){
+            this.countClick++;
             this.firstCard = card;
-            card.children[0].active = false;
-            card.children[1].active = true;
-        }else if(this.countClick === 2){
+            timeline.to(card.children[0].elm.style, {transform: "scaleX(0)", duration: 0.2});
+            timeline.to(card.children[1].elm.style, {transform: "scaleX(1)", duration: 0.2});
+            //card.children[0].active = false;
+            //card.children[1].active = true;
+            card.children[2].active = false;
+        }else if(this.countClick === 1){
             this.secondCard = card;
-            card.children[0].active = false;
-            card.children[1].active = true;
-            if(this.firstCard.value === this.secondCard.value){
-                setTimeout(function(that){
-                    that.firstCard.children[1].active = false;
-                    that.secondCard.children[1].active = false;
-                    that.firstCard = null;
-                    that.secondCard = null;
-                    that.countClick = 0;
-                }, 1000, this);
-            }else{
-                setTimeout(function(that){
-                    that.firstCard.children[0].active = true;
-                    that.firstCard.children[1].active = false;
-                    that.secondCard.children[0].active = true;
-                    that.secondCard.children[1].active = false;
-                    that.firstCard = null;
-                    that.secondCard = null;
-                    that.countClick = 0;
-                }, 1000, this);
+            if(this.firstCard.index === this.secondCard.index){
                 
+            }else{
+                this.countClick++;
+                timeline.to(card.children[0].elm.style, {transform: "scaleX(0)", duration: 0.2});
+                timeline.to(card.children[1].elm.style, {transform: "scaleX(1)", duration: 0.2});
+            
+            
+                let timeline1 = gsap.timeline();
+                
+                // card.children[0].active = false;
+                // card.children[1].active = true;
+                card.children[2].active = false;
+                if(this.firstCard.value === this.secondCard.value){
+                    setTimeout(function(that){
+                        timeline1.to(that.firstCard.children[1].elm.style, {transform: "scaleX(0)", duration: 0.2});
+                        timeline1.to(that.secondCard.children[1].elm.style, {transform: "scaleX(0)", duration: 0.2});
+                        // that.firstCard.children[1].active = false;
+                        // that.secondCard.children[1].active = false;
+                        timeline1.to(that.firstCard.elm.style, {display: "none", duration: 0.5});
+                        timeline1.to(that.secondCard.elm.style, {display: "none", duration: 0.5});
+                        
+                        that.firstCard = null;
+                        that.secondCard = null;
+                        that.countClick =0;
+                    }, 1000, this);
+                }else{
+                    setTimeout(function(that){
+                        timeline1.to(that.firstCard.children[1].elm.style, {transform: "scaleX(0)", duration: 0.2});
+                        timeline1.to(that.firstCard.children[0].elm.style, {transform: "scaleX(1)", duration: 0.2});
+                        
+                        timeline1.to(that.secondCard.children[1].elm.style, {transform: "scaleX(0)", duration: 0.2});
+                        timeline1.to(that.secondCard.children[0].elm.style, {transform: "scaleX(1)", duration: 0.2});
+                        
+                        //that.secondCard.children[0].elm.style, {transform: "scaleX(1)", duration: 0.2};
+                        //that.secondCard.children[1].elm.style, {transform: "scaleX(0)", duration: 0.2};
+
+                        //that.firstCard.children[0].active = true;
+                        //that.firstCard.children[1].active = false;
+                        that.firstCard.children[2].active = true;
+                        //that.secondCard.children[0].active = true;
+                        //that.secondCard.children[1].active = false;
+                        that.secondCard.children[2].active = true;
+                        that.firstCard = null;
+                        that.secondCard = null;
+                        that.countClick =0;
+                    }, 1000, this);
+                }
             }
         }
-        console.log(this.firstCard);
     }
 }
+
+// let timeline = gsap.timeline();
+// timeline.to(cover, {duration: 1, scaleX: 0})
+// timeline.to(cover, {duration: 1, scaleX: 1})
