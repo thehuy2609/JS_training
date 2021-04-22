@@ -15,7 +15,7 @@ export class Card extends Node {
         this.y = y;
         this._zIndex = "";
         if(zIndex) this.zIndex = zIndex;
-        this._canClick = "";
+        this._canClick = false;
         if(canClick) this.canClick = canClick;
         
         this._initCover();
@@ -50,14 +50,14 @@ export class Card extends Node {
     }
 
     _initCover() {
-        let bg = new Sprite("../img/cardBg.jpg","scaleX(1)",2);
+        let bg = new Sprite("./img/cardBg.jpg","scaleX(1)",2);
         //bg.elm.style.zIndex = 2;
         bg.elm.node = this;
         this.addChild(bg);
     }
     
     _initValue() {
-        let imgValue = new Sprite("../img/trucxanh" + this._value + ".jpg","scaleX(0)",1);
+        let imgValue = new Sprite("./img/trucxanh" + this._value + ".jpg","scaleX(0)",1);
         imgValue.elm.node = this;
         //imgValue.elm.style.transform = "scaleX(0)";
         //imgValue.elm.style.zIndex=1;

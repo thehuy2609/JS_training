@@ -1,6 +1,7 @@
 import { Node } from "../lib/Node.js";
 import { Sprite } from "../lib/Sprite.js";
 import { Label } from "../lib/Label.js";
+import { Div } from "../lib/Div.js";
 import { Card } from "../modules/Card.js";
 export class Game extends Node {
 
@@ -8,13 +9,14 @@ export class Game extends Node {
         this.countClick = 0;
         this.firstCard = null;
         this.secondCard = null;
-        
+        this.arrayCard =[];
         this._score = 1000;
         this._countWin = 0;
-        this._initScore();
+        this.btnStart = null;
         this._initSize();
-        this._initCards();
         this._initBackground();
+        this._initStartButton();
+        
     }
     
     get score(){
@@ -23,7 +25,7 @@ export class Game extends Node {
 
     set score(value){
         this._score = value;
-        this.children[0].text = this._score;
+        this.children[2].text = this._score;
     }
     
     get countWin(){
@@ -32,16 +34,53 @@ export class Game extends Node {
 
     set countWin(value){
         this._countWin = value;
-        //console.log(this._countWin);
+        
     }
 
-    _initScore() {
-        let score = new Label(this.score,{
+    _initStartButton(){
+        this.btnStart = new Div("START",{
             color: "#fff",
-            fontSize: "25px",
-            top: "10px",
-            left: "20px",
+            background: "#FF9900",
+            fontSize: "35px",
+            padding: "15px 25px",
+            borderRadius: "15px",
+            border: "5px solid #fff",
+        },true,true);
+        this.addChild(this.btnStart);
+
+        this.btnStart.on("mousedown", this.onClickStart.bind(this));
+    }
+
+    checkTheScore(){
+        if(this.countWin === 10){
+            alert('Thắng rồi nha!!!');
+            
+        }
+        if(this.score <= 0){
+            alert('Thua rồi nha!!!');
+            let timeline = gsap.timeline();
+            this.arrayCard.forEach(card =>{
+                timeline.to(card, {active: false, duration: 0.01});
+            });
+        }
+        
+    }
+
+    onClickStart(evt) {
+        this.btnStart.active = false;
+        this._initScore();
+        this._initCards();
+        this._initDistributeCard();
+        this.children[2].text = this._score;
+    }
+    
+    _initScore() {
+        let score = new Label(this._score,{
+            color: "#fff",
+            fontSize: "35px",
             zIndex: "99",
+            top: "10px",
+            right: "10px",
         },true,false);
         this.addChild(score);
     }
@@ -56,9 +95,7 @@ export class Game extends Node {
         this.addChild(bg);
     }
 
-    _initCards(){
-        let posL = 100, posT = 48;
-        let index = 0;
+    _initShuffleArray(){
         let myArray = [];
         for (let i = 1; i <= 20; i++) {           
             myArray.push(i);
@@ -71,33 +108,55 @@ export class Game extends Node {
             myArray[i] = myArray[r];
             myArray[r] = t;
         }
-        let RandomNumber = myArray.slice(0,20);
+        let result = myArray.slice(0,20);
+        return result;
+    }
+
+    _initCards(){
+        let col = 5, row = 4;
+        let index = 0;
+        let zIndex = 50;
         
-        for (let top = 0; top < 4; top++) {
-            for (let left = 0; left < 5; left++) {
+        let RandomNumber = this._initShuffleArray();
+
+        for (let i = 0; i < row; i++) {
+            for (let j = 0; j < col; j++) {
                 index+=1;
-                let imgNum = RandomNumber[index-1];
-                if(imgNum > 10){
-                    imgNum -= 10;
+                zIndex-=1;
+                let valueCard = RandomNumber[index-1];
+                if(valueCard > 10){
+                    valueCard -= 10;
                 }
 
-                let card = new Card(index, imgNum, posL, posT, 999, true);
+                let card = new Card(index, valueCard, 0, 0, zIndex, false);
                 this.addChild(card);
+                this.arrayCard.push(card);
                 card.on("mousedown", this.onClickCard.bind(this));
                 
-                posL+=120;
-                if(posL>580){
-                    posL =100;
-                }
             }
-            posT+=96;
         }
+    }
+
+    _initDistributeCard(){
+        let positionX = 100, positionY = 48;
+        let timeline = gsap.timeline();
+        this.arrayCard.forEach(card =>{
+            timeline.to(card, {x: positionX, y: positionY, duration: 0.2});
+            positionX+=120;
+            if(positionX>580){
+                positionX = 100;
+                positionY +=96;
+            }
+        })
+        
+        this.arrayCard.forEach(card =>{
+            timeline.to(card, {canClick: true, duration: 0.01});
+        });
     }
 
     onClickCard(evt) {
         let timeline = gsap.timeline();
         let card = evt.target.node;
-        
         if(this.countClick === 0  && card.canClick === true){
             this.countClick++;
             this.firstCard = card;
@@ -122,26 +181,19 @@ export class Game extends Node {
                 this.firstCard.zIndex = 99999;
                 this.secondCard.zIndex = 99999;
                 setTimeout(()=>{
-
                     timeline.to(this.firstCard.children[1], {scale: "scale(1.3)", duration: 0.2});
                     timeline1.to(this.secondCard.children[1], {scale: "scale(1.3)", duration: 0.2});
                     timeline.to(this.firstCard, {active: false, duration: 0.2});
                     timeline1.to(this.secondCard, {active: false, duration: 0.2});
-                    
                     this.firstCard = null;
                     this.secondCard = null;
                     this.countClick = 0;
-                }, 400)
-
-                this.score +=100;
-                this.countWin +=1;
-                if(this.countWin === 10){
-                    alert('Thắng rồi nha!!!');
-                }
+                    this.score +=100;
+                    this.countWin +=1;
+                    this.checkTheScore();
+                }, 500)
             }else{
-                
                 setTimeout(()=>{
-                    
                     timeline.to(this.firstCard.children[1], {scale: "scaleX(0)", duration: 0.2});
                     timeline.to(this.firstCard.children[0], {scale: "scaleX(1)", duration: 0.2});
                     timeline.to(this.firstCard.children[2], {active: true, duration: 0.2});
@@ -150,22 +202,13 @@ export class Game extends Node {
                     timeline1.to(this.secondCard.children[0], {scale: "scaleX(1)", duration: 0.2});
                     timeline1.to(this.secondCard.children[2], {active: true, duration: 0.2});
                     timeline1.to(this.secondCard, {canClick: true, duration: 0.1});
-                    
                     this.firstCard = null;
                     this.secondCard = null;
-                    
                     this.countClick = 0;
-                }, 700)
-                
-                this.score-=100;
-                if(this.score <= 0){
-                    alert('Thua rồi nha!!!')
-                }
+                    this.score-=100;
+                    this.checkTheScore();
+                }, 1000)
             }
         }
     }
 }
-
-// let timeline = gsap.timeline();
-// timeline.to(cover, {duration: 1, scaleX: 0})
-// timeline.to(cover, {duration: 1, scaleX: 1})

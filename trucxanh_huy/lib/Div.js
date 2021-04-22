@@ -1,5 +1,5 @@
 import { Node } from "./Node.js";
-export class Label extends Node {
+export class Div extends Node {
 
     constructor(text,textStyle,isActive,isCenter) {
         super();
@@ -39,13 +39,19 @@ export class Label extends Node {
         this._textStyle = value;
         this.elm.style.fontSize = this._textStyle.fontSize;
         this.elm.style.color = this._textStyle.color;
+        this.elm.style.background = this._textStyle.background;
+        this.elm.style.padding = this._textStyle.padding;
+        this.elm.style.border = this._textStyle.border;
+        this.elm.style.borderRadius = this._textStyle.borderRadius;
         this.elm.style.zIndex = this._textStyle.zIndex;
         this.elm.style.top = this._textStyle.top;
         this.elm.style.right = this._textStyle.right;
+        this.elm.style.left = this._textStyle.left;
+        this.elm.style.bottom = this._textStyle.bottom;
     }
 
     _initElement() {
-        this.elm = document.createElement("label");
+        this.elm = document.createElement("div");
         this.elm.style.position = "absolute";
     }
 }
