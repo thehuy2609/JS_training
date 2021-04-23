@@ -91,7 +91,7 @@ export class Game extends Node {
     }
 
     _initBackground(){
-        let bg = new Sprite("../img/trucxanh_bg.jpg",true);
+        let bg = new Sprite("./img/trucxanh_bg.jpg",true);
         this.addChild(bg);
     }
 
@@ -127,8 +127,12 @@ export class Game extends Node {
                 if(valueCard > 10){
                     valueCard -= 10;
                 }
-
+                
                 let card = new Card(index, valueCard, 0, 0, zIndex, false);
+                
+                card.x = this.width/2 - card.width/2;
+                card.y = this.height/2 - card.height/2;
+                
                 this.addChild(card);
                 this.arrayCard.push(card);
                 card.on("mousedown", this.onClickCard.bind(this));
@@ -141,11 +145,11 @@ export class Game extends Node {
         let positionX = 100, positionY = 48;
         let timeline = gsap.timeline();
         this.arrayCard.forEach(card =>{
-            timeline.to(card, {x: positionX, y: positionY, duration: 0.2});
-            positionX+=120;
-            if(positionX>580){
+            timeline.to(card, {ease: "back.out(3)", x: positionX, y: positionY, duration: 0.3});
+            positionX += card.width;
+            if(positionX >= (card.width*5 + 100)){
                 positionX = 100;
-                positionY +=96;
+                positionY += card.height;
             }
         })
         

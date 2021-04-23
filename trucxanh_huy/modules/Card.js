@@ -3,9 +3,9 @@ import { Node } from "../lib/Node.js";
 import { Sprite } from "../lib/Sprite.js";
 
 export class Card extends Node {
-    constructor(index, value, x, y, zIndex, canClick) {
+    constructor(indexLabel, value, x, y, zIndex, canClick) {
         super();
-        this._index = index;
+        this._indexLabel = indexLabel;
         this._value = "";
         if(value) this.value = value;
         
@@ -17,7 +17,7 @@ export class Card extends Node {
         if(zIndex) this.zIndex = zIndex;
         this._canClick = false;
         if(canClick) this.canClick = canClick;
-        
+
         this._initCover();
         this._initValue();
         this._initIndex();
@@ -65,13 +65,13 @@ export class Card extends Node {
     }
 
     _initIndex() {
-        let index = new Label(this._index,{
+        let indexLabel = new Label(this._indexLabel,{
             color: "#fff",
             fontSize: "25px",
         },true,true);
-        index.elm.node = this;
-        index.elm.style.zIndex =3;
-        this.addChild(index);
+        indexLabel.elm.node = this;
+        indexLabel.elm.style.zIndex =3;
+        this.addChild(indexLabel);
     }
 
     _initElement() {
