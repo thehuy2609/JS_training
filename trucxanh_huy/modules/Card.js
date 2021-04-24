@@ -76,9 +76,9 @@ export class Card extends Node {
 
     _initElement() {
         super._initElement();
-        //this.elm.style.border = "1px solid blue";
         this.elm.style.left = this._x + "px";
         this.elm.style.top = this._y + "px";
-        //this.elm.style.zIndex = "999";
+        this.elm.style.opacity = 1;
+        
     }
 }

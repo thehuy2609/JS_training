@@ -141,9 +141,25 @@ export class Game extends Node {
         }
     }
 
+    changeScore(game, number) {
+        var Cont = { val: game.score }, NewVal = game.score + number;
+
+        TweenLite.to(Cont, 1, {
+            val: NewVal, roundProps: { val: 10 }, onUpdate: function () {
+                game.score = Cont.val;
+            }
+        });
+    }
+
     _initDistributeCard(){
         let positionX = 100, positionY = 48;
         let timeline = gsap.timeline();
+        this.arrayCard.forEach (card =>{
+            timeline.to(card.elm.style, {opacity: 0, duration: 0.25});
+        })
+        this.arrayCard.forEach (card =>{
+            timeline.to(card.elm.style, {opacity: 1, duration: 0.01});
+        })
         this.arrayCard.forEach(card =>{
             timeline.to(card, {ease: "back.out(3)", x: positionX, y: positionY, duration: 0.3});
             positionX += card.width;
@@ -192,6 +208,7 @@ export class Game extends Node {
                     this.firstCard = null;
                     this.secondCard = null;
                     this.countClick = 0;
+                    this.changeScore(this, 100);
                     this.score +=100;
                     this.countWin +=1;
                     this.checkTheScore();
@@ -209,6 +226,7 @@ export class Game extends Node {
                     this.firstCard = null;
                     this.secondCard = null;
                     this.countClick = 0;
+                    this.changeScore(this, -100);
                     this.score-=100;
                     this.checkTheScore();
                 }, 1000)
