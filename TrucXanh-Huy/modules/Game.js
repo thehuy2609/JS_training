@@ -47,22 +47,22 @@ export class Game extends Node {
     }
 
     _initThemeSong(){
-        this.themeSong = new Audio("../audio/theme.mp3",true,true);
+        this.themeSong = new Audio("./audio/theme.mp3",true,true);
         this.addChild(this.themeSong);
     }
     
     _initCardFlipSound(){
-        this.cardFlipSound = new Audio("../audio/cardFlip.mp3",false,false);
+        this.cardFlipSound = new Audio("./audio/cardFlip.mp3",false,false);
         this.cardFlipSound.elm.play();
     }
     
     _initCorrectCard(){
-        this.cardFlipSound = new Audio("../audio/correct.mp3",false,false);
+        this.cardFlipSound = new Audio("./audio/correct.mp3",false,false);
         this.cardFlipSound.elm.play();
     }
     
     _initIncorrectCard(){
-        this.cardFlipSound = new Audio("../audio/incorrect.mp3",false,false);
+        this.cardFlipSound = new Audio("./audio/incorrect.mp3",false,false);
         this.cardFlipSound.elm.play();
     }
 
